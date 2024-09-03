@@ -8,5 +8,7 @@ public record PrescriptionDto(Long id,
                               Long doctorId,
                               Date nextVisitDate,
                               String diagnosis,
-                              String medicine) {
+                              String medicine
+) {
+
 }
