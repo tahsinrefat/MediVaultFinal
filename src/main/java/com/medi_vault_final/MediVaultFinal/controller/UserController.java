@@ -17,18 +17,20 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto){
+    public ResponseEntity<UserDto> getUserById(@RequestBody UserDto userDto){
         UserDto savedUser = userService.createUser(userDto);
         return ResponseEntity.ok(savedUser);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<UserDto> createUser(@PathVariable("id") Long userId){
+    //viewing profile for all roles
+    @GetMapping("/any/{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long userId){
         UserDto userDto = userService.getUserById(userId);
         return ResponseEntity.ok(userDto);
     }
 
-    @GetMapping
+    //viewing all user lists for admin
+    @GetMapping("/admin/get-all-user-list")
     public ResponseEntity<Page<UserDto>> getAllUsers(Pageable pageable){
         Page<UserDto> allUsers = userService.getAllUsers(pageable);
         return ResponseEntity.ok(allUsers);

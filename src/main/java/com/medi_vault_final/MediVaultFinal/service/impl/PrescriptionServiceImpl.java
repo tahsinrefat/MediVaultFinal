@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @RequiredArgsConstructor
 @Service
 public class PrescriptionServiceImpl implements PrescriptionService {
@@ -60,5 +62,17 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public void deletePrescriptionById(Long prescriptionId) {
         prescriptionRepository.findById(prescriptionId).orElseThrow( () -> new PrescriptionNotFoundException("No prescription found with ID "+prescriptionId));
         prescriptionRepository.deleteById(prescriptionId);
+    }
+
+    @Override
+    public Page<PrescriptionDto> getPrescriptionByCurrentMonth(Pageable pageable) {
+        Page<Prescription> currentDatePrescriptions = prescriptionRepository.findByCurrentMonth(new Date(), pageable);
+        return currentDatePrescriptions.map(PrescriptionMapper::mapToPrescriptionDto);
+    }
+
+    @Override
+    public Page<PrescriptionDto> getAllPrescriptionByDateRange(Date fromDate, Date toDate, Pageable pageable) {
+        Page<Prescription> allPrescriptionsByDateRange = prescriptionRepository.findAllByPrescriptionDateRange(fromDate, toDate, pageable);
+        return allPrescriptionsByDateRange.map(PrescriptionMapper::mapToPrescriptionDto);
     }
 }

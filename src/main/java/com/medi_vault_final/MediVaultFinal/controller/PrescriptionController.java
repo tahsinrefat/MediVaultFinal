@@ -1,5 +1,6 @@
 package com.medi_vault_final.MediVaultFinal.controller;
 
+import com.medi_vault_final.MediVaultFinal.dto.DateRangeDto;
 import com.medi_vault_final.MediVaultFinal.dto.PrescriptionDto;
 import com.medi_vault_final.MediVaultFinal.service.PrescriptionService;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @CrossOrigin("*")
 @RestController
@@ -43,5 +48,26 @@ public class PrescriptionController {
     public ResponseEntity<String> deleteUserById(@PathVariable("id") Long prescriptionId){
         prescriptionService.deletePrescriptionById(prescriptionId);
         return ResponseEntity.ok("Prescription deleted successfully");
+    }
+
+    //get all the prescription for admin
+    @GetMapping("/admin/current-month")
+    public ResponseEntity<Page<PrescriptionDto>> getCurrentMonthPrescriptions(Pageable pageable){
+        Page<PrescriptionDto> currentMonthPrescriptions = prescriptionService.getPrescriptionByCurrentMonth(pageable);
+        return ResponseEntity.ok(currentMonthPrescriptions);
+    }
+
+    @GetMapping("/admin/date-range")
+    public ResponseEntity<Page<PrescriptionDto>> getAllPrescriptionsByDateRange(@RequestBody DateRangeDto dateRangeDto, Pageable pageable){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date fromDate, toDate;
+        try {
+            fromDate = simpleDateFormat.parse(dateRangeDto.fromDate());
+            toDate = simpleDateFormat.parse(dateRangeDto.toDate());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        Page<PrescriptionDto> allPrescriptionsByDateRange = prescriptionService.getAllPrescriptionByDateRange(fromDate, toDate, pageable);
+        return ResponseEntity.ok(allPrescriptionsByDateRange);
     }
 }
