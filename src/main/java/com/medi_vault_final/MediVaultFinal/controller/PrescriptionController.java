@@ -68,6 +68,11 @@ public class PrescriptionController {
     }
     /* doesn't work */
 
+    @GetMapping("/any/current-month-user-id/{id}")
+    public ResponseEntity<Page<PrescriptionDto>> getPrescriptionByCurrentMonthAndUserId(@PathVariable("id") Long userId, Pageable pageable){
+        Page<PrescriptionDto> allPrescriptionsByCurrentMonthAndUserId = prescriptionService.getPrescriptionByCurrentMonthAndUser(userId, pageable);
+        return ResponseEntity.ok(allPrescriptionsByCurrentMonthAndUserId);
+    }
 
     @GetMapping({"","/"})
     public String adminHomepage(){
