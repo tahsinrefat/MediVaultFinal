@@ -13,7 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @RequiredArgsConstructor
 @Service
@@ -66,13 +66,20 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 
     @Override
     public Page<PrescriptionDto> getPrescriptionByCurrentMonth(Pageable pageable) {
-        Page<Prescription> currentDatePrescriptions = prescriptionRepository.findByCurrentMonth(new Date(), pageable);
+        Page<Prescription> currentDatePrescriptions = prescriptionRepository.findByCurrentMonth(LocalDate.now(), pageable);
         return currentDatePrescriptions.map(PrescriptionMapper::mapToPrescriptionDto);
     }
 
     @Override
-    public Page<PrescriptionDto> getAllPrescriptionByDateRange(Date fromDate, Date toDate, Pageable pageable) {
+    public Page<PrescriptionDto> getAllPrescriptionByDateRange(LocalDate fromDate, LocalDate toDate, Pageable pageable) {
         Page<Prescription> allPrescriptionsByDateRange = prescriptionRepository.findAllByPrescriptionDateRange(fromDate, toDate, pageable);
         return allPrescriptionsByDateRange.map(PrescriptionMapper::mapToPrescriptionDto);
+    }
+
+    @Override
+    public Page<Object[]> getPrescriptionCountByDate(LocalDate date, Pageable pageable) {
+//        Page<Object[]> allPrescriptionByDate = prescriptionRepository.findPrescriptionCountByDate(date, pageable);
+//        return allPrescriptionByDate.map(PrescriptionMapper::mapToPrescriptionDto);
+        return prescriptionRepository.findPrescriptionCountByDate(date, pageable);
     }
 }

@@ -1,12 +1,12 @@
 package com.medi_vault_final.MediVaultFinal.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record PrescriptionDto(Long id,
-                              Date prescriptionDate,
+                              LocalDate prescriptionDate,
                               Long patientId,
                               Long doctorId,
-                              Date nextVisitDate,
+                              LocalDate nextVisitDate,
                               String diagnosis,
                               String medicine
 ) {

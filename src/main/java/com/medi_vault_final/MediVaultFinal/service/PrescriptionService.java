@@ -4,7 +4,7 @@ import com.medi_vault_final.MediVaultFinal.dto.PrescriptionDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public interface PrescriptionService {
     PrescriptionDto createPrescription(PrescriptionDto prescriptionDto);
@@ -19,5 +19,7 @@ public interface PrescriptionService {
 
     Page<PrescriptionDto> getPrescriptionByCurrentMonth(Pageable pageable);
 
-    Page<PrescriptionDto> getAllPrescriptionByDateRange(Date fromDate, Date toDate, Pageable pageable);
+    Page<PrescriptionDto> getAllPrescriptionByDateRange(LocalDate fromDate, LocalDate toDate, Pageable pageable);
+
+    Page<Object[]> getPrescriptionCountByDate(LocalDate date, Pageable pageable);
 }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +21,7 @@ public class Prescription {
 
     @Column
     @NotNull(message = "Date cannot be null")
-    private Date prescriptionDate;
+    private LocalDate prescriptionDate;
 
     @JoinColumn(name = "patient_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,7 +32,7 @@ public class Prescription {
     private User doctor;
 
     @Column
-    private Date nextVisitDate;
+    private LocalDate nextVisitDate;
 
     @Column
     @NotBlank(message = "Diagnosis cannot be null")

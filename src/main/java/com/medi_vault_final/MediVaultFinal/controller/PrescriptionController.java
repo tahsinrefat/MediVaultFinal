@@ -1,5 +1,6 @@
 package com.medi_vault_final.MediVaultFinal.controller;
 
+import com.medi_vault_final.MediVaultFinal.dto.DateDto;
 import com.medi_vault_final.MediVaultFinal.dto.DateRangeDto;
 import com.medi_vault_final.MediVaultFinal.dto.PrescriptionDto;
 import com.medi_vault_final.MediVaultFinal.service.PrescriptionService;
@@ -8,10 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @CrossOrigin("*")
 @RestController
@@ -57,17 +54,23 @@ public class PrescriptionController {
         return ResponseEntity.ok(currentMonthPrescriptions);
     }
 
+    //get all prescription for admin within a certain date range
     @GetMapping("/admin/date-range")
     public ResponseEntity<Page<PrescriptionDto>> getAllPrescriptionsByDateRange(@RequestBody DateRangeDto dateRangeDto, Pageable pageable){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date fromDate, toDate;
-        try {
-            fromDate = simpleDateFormat.parse(dateRangeDto.fromDate());
-            toDate = simpleDateFormat.parse(dateRangeDto.toDate());
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        Page<PrescriptionDto> allPrescriptionsByDateRange = prescriptionService.getAllPrescriptionByDateRange(fromDate, toDate, pageable);
+        Page<PrescriptionDto> allPrescriptionsByDateRange = prescriptionService.getAllPrescriptionByDateRange(dateRangeDto.fromDate(), dateRangeDto.toDate(), pageable);
         return ResponseEntity.ok(allPrescriptionsByDateRange);
+    }
+
+    /* doesn't work */
+    @GetMapping("/admin/prescription-count")
+    public ResponseEntity<Page<Object[]>> getPrescriptionCountByDate(@RequestBody DateDto date, Pageable pageable){
+        return ResponseEntity.ok(prescriptionService.getPrescriptionCountByDate(date.localDate(), pageable));
+    }
+    /* doesn't work */
+
+
+    @GetMapping({"","/"})
+    public String adminHomepage(){
+        return "index";
     }
 }
