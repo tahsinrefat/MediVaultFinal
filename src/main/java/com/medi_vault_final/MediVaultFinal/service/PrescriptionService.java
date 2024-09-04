@@ -28,4 +28,8 @@ public interface PrescriptionService {
     Page<PrescriptionDto> getPrescriptionByCurrentMonthAndUser(Long userId, Pageable pageable);
 
     Page<PrescriptionDto> getPrescriptionByDateRangeAndUserId(LocalDate fromDate, LocalDate toDate, Long userId, Pageable pageable);
+
+    Page<PrescriptionDto> getPrescriptionByCurrentMonthAndDoctor(Long doctorId, Pageable pageable);
+
+    Page<PrescriptionDto> getPrescriptionByDateRangeAndDoctor(LocalDate fromDate, LocalDate toDate, Long doctorId, Pageable pageable);
 }

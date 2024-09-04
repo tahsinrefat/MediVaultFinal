@@ -26,4 +26,10 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Long
 
     @Query("SELECT p FROM Prescription p WHERE p.prescriptionDate BETWEEN :fromDate AND :toDate AND (p.patient.id = :userId)")
     Page<Prescription> findByDateRangeAndUserId(LocalDate fromDate, LocalDate toDate, Long userId, Pageable pageable);
+
+    @Query("SELECT p FROM Prescription p WHERE MONTH(p.prescriptionDate) = MONTH(:currentDate) AND YEAR(p.prescriptionDate) = YEAR(:currentDate) AND p.doctor.id = :doctorId")
+    Page<Prescription> findByCurrentMonthAndDoctorId(LocalDate currentDate, Long doctorId, Pageable pageable);
+
+    @Query("SELECT p FROM Prescription p WHERE p.prescriptionDate BETWEEN :fromDate AND :toDate AND (p.doctor.id = :doctorId)")
+    Page<Prescription> findByDateRangeAndDoctorId(LocalDate fromDate, LocalDate toDate, Long doctorId, Pageable pageable);
 }

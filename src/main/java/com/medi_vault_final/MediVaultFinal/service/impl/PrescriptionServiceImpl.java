@@ -96,4 +96,16 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         Page<Prescription> allPrescriptionByDateRangeAndId = prescriptionRepository.findByDateRangeAndUserId(fromDate, toDate, userId, pageable);
         return allPrescriptionByDateRangeAndId.map(PrescriptionMapper::mapToPrescriptionDto);
     }
+
+    @Override
+    public Page<PrescriptionDto> getPrescriptionByCurrentMonthAndDoctor(Long doctorId, Pageable pageable) {
+        Page<Prescription> allPrescriptionByCurrentMonthAndDoctorId = prescriptionRepository.findByCurrentMonthAndDoctorId(LocalDate.now(), doctorId, pageable);
+        return allPrescriptionByCurrentMonthAndDoctorId.map(PrescriptionMapper::mapToPrescriptionDto);
+    }
+
+    @Override
+    public Page<PrescriptionDto> getPrescriptionByDateRangeAndDoctor(LocalDate fromDate, LocalDate toDate, Long doctorId, Pageable pageable) {
+        Page<Prescription> allPrescriptionByDateRangeAndDoctorId = prescriptionRepository.findByDateRangeAndDoctorId(fromDate, toDate, doctorId, pageable);
+        return allPrescriptionByDateRangeAndDoctorId.map(PrescriptionMapper::mapToPrescriptionDto);
+    }
 }
