@@ -3,12 +3,15 @@ package com.medi_vault_final.MediVaultFinal.controller;
 import com.medi_vault_final.MediVaultFinal.dto.DateDto;
 import com.medi_vault_final.MediVaultFinal.dto.DateRangeDto;
 import com.medi_vault_final.MediVaultFinal.dto.PrescriptionDto;
+import com.medi_vault_final.MediVaultFinal.mapper.PrescriptionMapper;
 import com.medi_vault_final.MediVaultFinal.service.PrescriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @CrossOrigin("*")
 @RestController
@@ -72,6 +75,12 @@ public class PrescriptionController {
     public ResponseEntity<Page<PrescriptionDto>> getPrescriptionByCurrentMonthAndUserId(@PathVariable("id") Long userId, Pageable pageable){
         Page<PrescriptionDto> allPrescriptionsByCurrentMonthAndUserId = prescriptionService.getPrescriptionByCurrentMonthAndUser(userId, pageable);
         return ResponseEntity.ok(allPrescriptionsByCurrentMonthAndUserId);
+    }
+
+    @GetMapping("/any/date-range-user-id/{id}")
+    public ResponseEntity<Page<PrescriptionDto>> getPrescriptionByDateRangeAndUserID(@PathVariable("id") Long userId, @RequestBody DateRangeDto dateRangeDto, Pageable pageable){
+        Page<PrescriptionDto> allPrescriptionsByDateRangeAndUserId = prescriptionService.getPrescriptionByDateRangeAndUserId(dateRangeDto.fromDate(), dateRangeDto.toDate(), userId, pageable);
+        return ResponseEntity.ok(allPrescriptionsByDateRangeAndUserId);
     }
 
     @GetMapping({"","/"})

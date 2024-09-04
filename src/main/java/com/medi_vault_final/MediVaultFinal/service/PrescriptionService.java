@@ -26,4 +26,6 @@ public interface PrescriptionService {
     /* has some issue have to work on that later */
 
     Page<PrescriptionDto> getPrescriptionByCurrentMonthAndUser(Long userId, Pageable pageable);
+
+    Page<PrescriptionDto> getPrescriptionByDateRangeAndUserId(LocalDate fromDate, LocalDate toDate, Long userId, Pageable pageable);
 }
