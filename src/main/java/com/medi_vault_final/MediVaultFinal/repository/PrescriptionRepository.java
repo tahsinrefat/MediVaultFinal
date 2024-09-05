@@ -17,7 +17,10 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, Long
     Page<Prescription> findAllByPrescriptionDateRange(LocalDate fromDate, LocalDate toDate, Pageable pageable);
 
     /* has some issue have to work on that later */
-    @Query("SELECT u.id, u.name, COUNT(p.id) AS prescriptionCount FROM Prescription p JOIN p.doctor u WHERE p.prescriptionDate = :date GROUP BY p.doctor")
+    @Query("SELECT u.id, u.name, " +
+            "(SELECT COUNT(p.id) FROM Prescription p WHERE p.doctor.id = u.id AND p.prescriptionDate = :date) AS prescriptionCount " +
+            "FROM User u " +
+            "WHERE EXISTS (SELECT 1 FROM Prescription p WHERE p.doctor.id = u.id AND p.prescriptionDate = :date)")
     Page<Object[]> findPrescriptionCountByDate(LocalDate date, Pageable pageable);
     /* has some issue have to work on that later */
 
