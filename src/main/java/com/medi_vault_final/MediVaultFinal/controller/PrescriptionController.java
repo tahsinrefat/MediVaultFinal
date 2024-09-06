@@ -95,9 +95,4 @@ public class PrescriptionController {
         Page<PrescriptionDto> allPrescriptionsByDateRangeAndDoctorId = prescriptionService.getPrescriptionByDateRangeAndDoctor(dateRangeDto.fromDate(), dateRangeDto.toDate(), doctorId, pageable);
         return ResponseEntity.ok(allPrescriptionsByDateRangeAndDoctorId);
     }
-
-    @GetMapping({"","/"})
-    public String adminHomepage(){
-        return "index";
-    }
 }

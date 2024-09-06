@@ -1,0 +1,12 @@
+.back-btn {
+  background-color: lightgray;
+  color: black;
+  border: 2px solid darkgray;
+}
+.back-btn:hover {
+  background-color: black;
+  color: white;
+}
+.container {
+  margin-top: 170px;
+}
