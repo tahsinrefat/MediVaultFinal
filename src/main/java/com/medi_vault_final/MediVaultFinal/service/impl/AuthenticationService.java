@@ -2,6 +2,7 @@ package com.medi_vault_final.MediVaultFinal.service.impl;
 
 import com.medi_vault_final.MediVaultFinal.dto.AuthenticationRequestDto;
 import com.medi_vault_final.MediVaultFinal.entity.User;
+import com.medi_vault_final.MediVaultFinal.exception.BadCredentialsException;
 import com.medi_vault_final.MediVaultFinal.exception.UserNotFoundException;
 import com.medi_vault_final.MediVaultFinal.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ public class AuthenticationService {
         if (authentication.isAuthenticated()){
             return jwtService.generateToken(user);
         }
-        return ResponseEntity.badRequest().body("Bad credentials");
+//        return ResponseEntity.badRequest().body("Bad credentials");
+        throw new BadCredentialsException("You have entered wrong email or password.");
     }
 }
