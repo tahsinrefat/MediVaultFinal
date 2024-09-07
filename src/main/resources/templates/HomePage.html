@@ -12,124 +12,126 @@
     <link rel="stylesheet" th:href="@{/css/HomePage.css}">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-custom">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">MediVault</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item nav-item-profile">
-                    <a class="nav-link active" aria-current="page" href="#">Profile</a>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">MediVault</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item nav-item-profile">
+                        <a class="nav-link active"
+                           th:href="@{/api/v1/templates/auth/profile(jwtToken=${jwtToken}, username=${username})}"
+                           aria-current="page">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <button type="submit" class="btn btn-danger rounded-3">Logout</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <br><br>
+    <div class="quotes">
+        <h1>Hello Mr. <span th:text="${name}">User</span>!</h1><br>
+        <h2>Hope you feel better soon!</h2>
+    </div>
+
+    <div class="container">
+        <div class="parameters">
+            <div class="mb-3">
+                <div class="row justify-content-center align-items-end">
+                    <div class="col-md-3">
+                        <label for="from-date" class="form-label">From</label>
+                        <input type="date" class="form-control" id="from-date">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="to-date" class="form-label">To</label>
+                        <input type="date" class="form-control" id="to-date">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-info">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contents">
+            <table class="table table-striped table-hover">
+                <thead class="table-light">
+                <tr>
+                    <th scope="col" class="text-center">Prescription Date</th>
+                    <th scope="col" class="text-center">Patient ID</th>
+                    <th scope="col" class="text-center">Doctor ID</th>
+                    <th scope="col" class="text-center">Diagnosis</th>
+                    <th scope="col" class="text-center">Medicine</th>
+                    <th scope="col" class="text-center">Next Visit Date</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Iterate through the prescriptionDtoPage content to populate the table rows -->
+                <tr th:each="prescription : ${prescriptionDto}">
+                    <td class="text-center" th:text="${prescription.prescriptionDate}"></td>
+                    <td class="text-center" th:text="${prescription.patientId}"></td>
+                    <td class="text-center" th:text="${prescription.doctorId}"></td>
+                    <td class="text-center" th:text="${prescription.diagnosis}"></td>
+                    <td class="text-center" th:text="${prescription.medicine}"></td>
+                    <td class="text-center" th:text="${prescription.nextVisitDate}"></td>
+                    <td class="text-center">
+                        <button type="submit" class="btn btn-info rounded-3 btn-edit">Edit</button>
+                        <button type="submit" class="btn btn-danger rounded-3">Delete</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination buttons -->
+        <div class="d-flex justify-content-center">
+            <ul class="pagination">
+                <!-- Previous button -->
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage - 1})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <button type="submit" class="btn btn-danger rounded-3">Logout</button>
+
+                <!-- Dynamic pagination buttons -->
+                <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${currentPage == pageNum} ? 'active'">
+                    <a class="page-link" th:text="${pageNum + 1}"
+                       th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${pageNum})}">1</a>
+                </li>
+
+                <!-- Next button -->
+                <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage + 1})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
                 </li>
             </ul>
         </div>
-    </div>
-</nav>
-<br><br>
-<div class="quotes">
-    <h1>Hello Mr. <span th:text="${name}">User</span>!</h1><br>
-    <h2>Hope you feel better soon!</h2>
-</div>
 
-<div class="container">
-    <div class="parameters">
-        <div class="mb-3">
-            <div class="row justify-content-center align-items-end">
-                <div class="col-md-3">
-                    <label for="from-date" class="form-label">From</label>
-                    <input type="date" class="form-control" id="from-date">
+
+        <div class="footer">
+            <footer class="footer mt-auto text-center shadow-lg">
+                <div class="container">
+                    <p class="mb-1">&copy; 2024 MediVault</p>
+                    <p class="mb-1">
+                        <a href="#">Privacy Policy</a> |
+                        <a href="#">Terms of Service</a>
+                    </p>
+                    <h6>Designed By Tahsin Ahmed Refat</h6>
+                    <p class="mb-0">Follow me on
+                        <a href="https://www.facebook.com/tahsin.refat">Facebook</a>,
+                        <a href="https://www.linkedin.com/in/tahsinahmedrefat/">LinkedIn</a>, and
+                        <a href="https://github.com/tahsinrefat">GitHub</a>
+                    </p>
                 </div>
-                <div class="col-md-3">
-                    <label for="to-date" class="form-label">To</label>
-                    <input type="date" class="form-control" id="to-date">
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-info">Submit</button>
-                </div>
-            </div>
+            </footer>
         </div>
     </div>
-
-    <div class="contents">
-        <table class="table table-striped table-hover">
-            <thead class="table-light">
-            <tr>
-                <th scope="col" class="text-center">Prescription Date</th>
-                <th scope="col" class="text-center">Patient ID</th>
-                <th scope="col" class="text-center">Doctor ID</th>
-                <th scope="col" class="text-center">Diagnosis</th>
-                <th scope="col" class="text-center">Medicine</th>
-                <th scope="col" class="text-center">Next Visit Date</th>
-                <th scope="col" class="text-center">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- Iterate through the prescriptionDtoPage content to populate the table rows -->
-            <tr th:each="prescription : ${prescriptionDto}">
-                <td class="text-center" th:text="${prescription.prescriptionDate}"></td>
-                <td class="text-center" th:text="${prescription.patientId}"></td>
-                <td class="text-center" th:text="${prescription.doctorId}"></td>
-                <td class="text-center" th:text="${prescription.diagnosis}"></td>
-                <td class="text-center" th:text="${prescription.medicine}"></td>
-                <td class="text-center" th:text="${prescription.nextVisitDate}"></td>
-                <td class="text-center">
-                    <button type="submit" class="btn btn-info rounded-3 btn-edit">Edit</button>
-                    <button type="submit" class="btn btn-danger rounded-3">Delete</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Pagination buttons -->
-    <div class="d-flex justify-content-center">
-        <ul class="pagination">
-            <!-- Previous button -->
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage - 1})}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-
-            <!-- Dynamic pagination buttons -->
-            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                th:classappend="${currentPage == pageNum} ? 'active'">
-                <a class="page-link" th:text="${pageNum + 1}"
-                   th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${pageNum})}">1</a>
-            </li>
-
-            <!-- Next button -->
-            <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage + 1})}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-
-    <div class="footer">
-        <footer class="footer mt-auto text-center shadow-lg">
-            <div class="container">
-                <p class="mb-1">&copy; 2024 MediVault</p>
-                <p class="mb-1">
-                    <a href="#">Privacy Policy</a> |
-                    <a href="#">Terms of Service</a>
-                </p>
-                <h6>Designed By Tahsin Ahmed Refat</h6>
-                <p class="mb-0">Follow me on
-                    <a href="https://www.facebook.com/tahsin.refat">Facebook</a>,
-                    <a href="https://www.linkedin.com/in/tahsinahmedrefat/">LinkedIn</a>, and
-                    <a href="https://github.com/tahsinrefat">GitHub</a>
-                </p>
-            </div>
-        </footer>
-    </div>
-</div>
 </body>
 </html>

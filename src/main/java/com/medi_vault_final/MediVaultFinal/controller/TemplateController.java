@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +37,7 @@ public class TemplateController {
     private final UserRepository userRepository;
 
     private final JWTService jwtService;
+
 
     @GetMapping("/auth/login-page")
     public String loginPage(Model model){
@@ -87,6 +89,7 @@ public class TemplateController {
         String username = jwtService.extractUsername(jwtToken);
         User user = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username "+username));
 
+        model.addAttribute("jwtToken", jwtToken);
         model.addAttribute("username", username);
         model.addAttribute("name", user.getName());
         Pageable pageable = PageRequest.of((int)pageNumber, 10, Sort.by("prescriptionDate").descending());
@@ -99,4 +102,20 @@ public class TemplateController {
         model.addAttribute("totalPages", prescriptionDto.getTotalPages());
         return "HomePage";
     }
+
+    @GetMapping("/auth/profile")
+    public String profile(@RequestParam String jwtToken, @RequestParam String username, Model profileModel){
+        User user = new User();
+        user.setUsername(username);
+        if (jwtService.validateToken(jwtToken, user)){
+            User user1 = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username: "+username));
+            profileModel.addAttribute("userDto", UserMapper.mapToUserDto(user1));
+        }
+        return "ProfilePage";
+    }
+
+//    @GetMapping("/auth/profile-page")
+//    public String profilePage(@ModelAttribute("userDto") UserDto userDto){
+//        return "ProfilePage";
+//    }
 }
