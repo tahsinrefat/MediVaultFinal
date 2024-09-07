@@ -1,0 +1,23 @@
+.register-btn {
+  background-color: blue;
+  color: white;
+  border: 2px solid blue;
+}
+.register-btn:hover {
+  background-color: darkblue;
+  color: white;
+  border-color: darkblue;
+}
+.back-btn {
+  background-color: lightgray;
+  color: black;
+  border: 2px solid darkgray;
+}
+.back-btn:hover {
+  background-color: black;
+  color: white;
+  border-color: white;
+}
+.container {
+  margin-top: 110px;
+}

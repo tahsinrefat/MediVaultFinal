@@ -25,7 +25,7 @@ public class SecurityConfiguration {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( auth -> auth
-                        .requestMatchers("/api/v1/auth/**", "/api/v1/templates/auth/**")
+                        .requestMatchers("/api/v1/auth/**", "/api/v1/templates/auth/**", "/css/**", "/js/**")
                         .permitAll()
                         .requestMatchers("/api/v1/prescriptions/any/**").hasAnyRole(Role.ADMIN.name(), Role.DOCTOR.name(), Role.PATIENT.name())
                         .requestMatchers("/api/v1/prescriptions/doctor/**").hasRole(Role.DOCTOR.name())
