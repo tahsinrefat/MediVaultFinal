@@ -1,6 +1,7 @@
 package com.medi_vault_final.MediVaultFinal.controller;
 
 import com.medi_vault_final.MediVaultFinal.dto.AuthenticationRequestDto;
+import com.medi_vault_final.MediVaultFinal.dto.DateRangeDto;
 import com.medi_vault_final.MediVaultFinal.dto.PrescriptionDto;
 import com.medi_vault_final.MediVaultFinal.dto.UserDto;
 import com.medi_vault_final.MediVaultFinal.entity.User;
@@ -23,6 +24,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @CrossOrigin("*")
 @Controller
@@ -81,8 +86,8 @@ public class TemplateController {
         return "RegisterPage";
     }
 
-    @GetMapping("/auth/home-page/{page-number}")
-    public String homePage(Model model, @CookieValue(value = "jwtToken", defaultValue = "") String jwtToken, @PathVariable("page-number") long pageNumber){
+    @RequestMapping(value = "/auth/home-page/{page-number}", method = {RequestMethod.GET, RequestMethod.POST})
+    public String homePage(Model model, @CookieValue(value = "jwtToken", defaultValue = "") String jwtToken, @PathVariable("page-number") long pageNumber, @RequestParam(required = false) String fromDate, @RequestParam(required = false) String toDate){
         if (jwtToken.isEmpty()){
             return "redirect:/api/v1/templates/auth/login-page";
         }
@@ -93,7 +98,18 @@ public class TemplateController {
         model.addAttribute("username", username);
         model.addAttribute("name", user.getName());
         Pageable pageable = PageRequest.of((int)pageNumber, 10, Sort.by("prescriptionDate").descending());
-        Page<PrescriptionDto> prescriptionDto = prescriptionService.getPrescriptionByCurrentMonthAndUser(user.getId(), pageable);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateFrom = null;
+        LocalDate dateTo = null;
+        try {
+            if (fromDate != null && toDate != null){
+                dateFrom = LocalDate.parse(fromDate, formatter);
+                dateTo = LocalDate.parse(toDate, formatter);
+            }
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format: " + e.getMessage());
+        }
+        Page<PrescriptionDto> prescriptionDto = dateFrom == null && dateTo == null? prescriptionService.getPrescriptionByCurrentMonthAndUser(user.getId(), pageable): prescriptionService.getPrescriptionByDateRangeAndUserId(dateFrom, dateTo, user.getId(), pageable);
         model.addAttribute("prescriptionDto", prescriptionDto);
         model.addAttribute("currentPage", pageNumber);
         long numberOfElements = prescriptionDto.getTotalElements();
