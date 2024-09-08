@@ -267,4 +267,38 @@ public class TemplateController {
         return "redirect:/api/v1/templates/auth/home-page/0?username=" + username;
     }
 
+    @PostMapping("/auth/edit-prescription/{prescription-id}")
+    public String editPrescriptionById(@PathVariable("prescription-id") Long prescriptionId, @RequestParam String username, @CookieValue(value = "jwtToken", defaultValue = "") String jwtToken, Model editPrescriptionPageModel, @ModelAttribute("editedPrescription") PrescriptionDto editedPrescriptionDto){
+        User currentUser = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username "+username));
+        if (jwtService.validateToken(jwtToken, currentUser)){
+            if (currentUser.getRole().equals(Role.DOCTOR)){
+                PrescriptionDto prescriptionDto = prescriptionService.getPrescriptionById(prescriptionId);
+                User patient = userRepository.findById(prescriptionDto.patientId()).orElseThrow(() -> new UserNotFoundException("No user found with ID "+ prescriptionDto.patientId()));
+                editPrescriptionPageModel.addAttribute( "prescriptionDto",prescriptionDto);
+                editPrescriptionPageModel.addAttribute( "patientName",patient.getName());
+                editPrescriptionPageModel.addAttribute("patientAge", patient.getAge());
+                editPrescriptionPageModel.addAttribute("patientGender", patient.getGender());
+                editPrescriptionPageModel.addAttribute("username", username);
+            }
+        }
+        return "EditPrescriptionPage";
+    }
+
+    @PostMapping("/auth/save-edited")
+    public String saveEdited(@ModelAttribute("prescriptionDto") PrescriptionDto prescriptionDto, @RequestParam String username, @CookieValue(value = "jwtToken", defaultValue = "") String jwtToken){
+        User currentUser = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username "+username));
+        if (jwtService.validateToken(jwtToken, currentUser)){
+            if (currentUser.getRole().equals(Role.DOCTOR)){
+                PrescriptionDto prescriptionDto1 = prescriptionService.getPrescriptionById(prescriptionDto.id());
+                PrescriptionDto finalPrescriptionDto = new PrescriptionDto(prescriptionDto.id(), prescriptionDto1.prescriptionDate(), prescriptionDto.patientId(), prescriptionDto.doctorId(), prescriptionDto1.nextVisitDate(), prescriptionDto.diagnosis(), prescriptionDto.medicine());
+                prescriptionService.updatePrescriptionById(prescriptionDto.id(), finalPrescriptionDto);
+                return "redirect:/api/v1/templates/auth/written-prescriptions/0?username=" + username;
+            } else{
+                throw new InvalidAuthorityException("You do not have authorization to this operation");
+            }
+        } else {
+            throw new InvalidJWTToken("JWT token is not valid");
+        }
+    }
+
 }
