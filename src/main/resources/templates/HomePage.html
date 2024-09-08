@@ -90,8 +90,9 @@
                     <td class="text-center" th:text="${prescription.medicine}"></td>
                     <td class="text-center" th:text="${prescription.nextVisitDate}"></td>
                     <td class="text-center">
-                        <button type="submit" class="btn btn-info rounded-3 btn-edit">Edit</button>
-                        <button type="submit" class="btn btn-danger rounded-3">Delete</button>
+                        <form th:action="@{'/api/v1/templates/auth/delete-prescription/' + ${prescription.id} + '?username=' + ${username}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger rounded-3">Delete</button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>

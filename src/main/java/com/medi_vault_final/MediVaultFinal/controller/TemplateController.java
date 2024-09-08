@@ -215,8 +215,6 @@ public class TemplateController {
                     if (fromDate != null && !fromDate.isEmpty() && toDate != null && !toDate.isEmpty()) {
                         dateFrom = LocalDate.parse(fromDate, formatter);
                         dateTo = LocalDate.parse(toDate, formatter);
-
-                        // Add valid dates to the model
                         writtenPrescriptionModel.addAttribute("fromDate", fromDate);
                         writtenPrescriptionModel.addAttribute("toDate", toDate);
                     }
@@ -258,6 +256,15 @@ public class TemplateController {
         } else {
             throw new InvalidAuthorityException("You are not authorized for this task.");
         }
+    }
+
+    @PostMapping("/auth/delete-prescription/{prescription-id}")
+    public String deletePrescriptionById(@PathVariable("prescription-id") Long prescriptionId, @RequestParam String username, @CookieValue(value = "jwtToken", defaultValue = "") String jwtToken){
+        User currentUser = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username "+username));
+        if (jwtService.validateToken(jwtToken, currentUser)){
+            prescriptionService.deletePrescriptionById(prescriptionId);
+        }
+        return "redirect:/api/v1/templates/auth/home-page/0?username=" + username;
     }
 
 }
