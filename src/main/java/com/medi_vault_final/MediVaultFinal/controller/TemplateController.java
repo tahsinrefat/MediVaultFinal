@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @Controller
@@ -172,6 +175,41 @@ public class TemplateController {
             }
         }
         throw new InvalidJWTToken("Invalid JWT token");
+    }
+
+    @PostMapping("/auth/create-prescription")
+    public String createPrescription(@ModelAttribute("prescriptionDto") PrescriptionDto prescriptionDto, @RequestParam String jwtToken, @RequestParam String username){
+        User currentDoctor = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username "+username));
+        PrescriptionDto finalPrescriptionDto = new PrescriptionDto(
+                null,
+                LocalDate.now(),
+                prescriptionDto.patientId(),
+                currentDoctor.getId(),
+                prescriptionDto.nextVisitDate(),
+                prescriptionDto.diagnosis(),
+                prescriptionDto.medicine()
+        );
+        prescriptionService.createPrescription(finalPrescriptionDto);
+        return "redirect:/api/v1/auth/templates/written-prescriptions";
+    }
+
+    @GetMapping("/auth/create-prescription-page")
+    public String createPrescriptionPage(@ModelAttribute("prescriptionDto") PrescriptionDto prescriptionDto, @RequestParam String jwtToken, @RequestParam String username, Model createPrescriptionPageModel){
+        User currentUser = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username "+username));
+        if (currentUser.getRole().equals(Role.DOCTOR)){
+            if (jwtService.validateToken(jwtToken, currentUser)){
+                createPrescriptionPageModel.addAttribute("jwtToken",jwtToken);
+                createPrescriptionPageModel.addAttribute("username",username);
+                List<User> allExceptDoctor = userRepository.findAll();
+                allExceptDoctor.removeIf( user -> user.getUsername().equals(username));
+                createPrescriptionPageModel.addAttribute("allUsers",allExceptDoctor.stream().map(UserMapper::mapToUserDto).collect(Collectors.toList()));
+                return "CreatePrescriptionPage";
+            } else{
+                throw new InvalidJWTToken("JWT token is invalid");
+            }
+        } else {
+            throw new InvalidAuthorityException("You are not authorized for this task.");
+        }
     }
 
 }
