@@ -1,6 +1,7 @@
 package com.medi_vault_final.MediVaultFinal.controller;
 
 import com.medi_vault_final.MediVaultFinal.dto.AuthenticationRequestDto;
+import com.medi_vault_final.MediVaultFinal.dto.DateRangeDto;
 import com.medi_vault_final.MediVaultFinal.dto.PrescriptionDto;
 import com.medi_vault_final.MediVaultFinal.dto.UserDto;
 import com.medi_vault_final.MediVaultFinal.entity.User;
@@ -130,7 +131,7 @@ public class TemplateController {
     }
 
     @GetMapping("/auth/profile")
-    public String profile(@RequestParam String jwtToken, @RequestParam String username, Model profileModel){
+    public String profile(@CookieValue(value = "jwtToken", defaultValue = "") String jwtToken, @RequestParam String username, Model profileModel){
         User user = new User();
         user.setUsername(username);
         if (jwtService.validateToken(jwtToken, user)){
@@ -178,7 +179,7 @@ public class TemplateController {
     }
 
     @PostMapping("/auth/create-prescription")
-    public String createPrescription(@ModelAttribute("prescriptionDto") PrescriptionDto prescriptionDto, @RequestParam String jwtToken, @RequestParam String username){
+    public String createPrescription(@ModelAttribute("prescriptionDto") PrescriptionDto prescriptionDto, @CookieValue(value = "jwtToken", defaultValue = "") String jwtToken, @RequestParam String username){
         User currentDoctor = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username "+username));
         PrescriptionDto finalPrescriptionDto = new PrescriptionDto(
                 null,
@@ -189,12 +190,59 @@ public class TemplateController {
                 prescriptionDto.diagnosis(),
                 prescriptionDto.medicine()
         );
-        prescriptionService.createPrescription(finalPrescriptionDto);
-        return "redirect:/api/v1/auth/templates/written-prescriptions";
+        User currentUser = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username "+ username));
+        if (jwtService.validateToken(jwtToken, currentUser)){
+            if (currentUser.getRole().equals(Role.DOCTOR)){
+                prescriptionService.createPrescription(finalPrescriptionDto);
+            }else {
+                throw new InvalidAuthorityException("You are not authorized for this operation.");
+            }
+        }else {
+            throw new InvalidJWTToken("JWT token is invalid");
+        }
+        return "redirect:/api/v1/templates/auth/written-prescriptions/0?username=" + username;
+    }
+
+    @RequestMapping(value = "/auth/written-prescriptions/{page-number}", method = {RequestMethod.GET, RequestMethod.POST})
+    public String writtenPrescriptionPage(@ModelAttribute("dateRangeDto") DateRangeDto dateRangeDto, Model writtenPrescriptionModel, @PathVariable("page-number") long pageNumber, @RequestParam(required = false) String fromDate, @RequestParam(required = false) String toDate, @CookieValue(value = "jwtToken", defaultValue = "") String jwtToken, @RequestParam String username){
+        User currentUser = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username "+ username));
+        if (jwtService.validateToken(jwtToken, currentUser)){
+            if (currentUser.getRole().equals(Role.DOCTOR)){
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate dateFrom = null;
+                LocalDate dateTo = null;
+                try {
+                    if (fromDate != null && !fromDate.isEmpty() && toDate != null && !toDate.isEmpty()) {
+                        dateFrom = LocalDate.parse(fromDate, formatter);
+                        dateTo = LocalDate.parse(toDate, formatter);
+
+                        // Add valid dates to the model
+                        writtenPrescriptionModel.addAttribute("fromDate", fromDate);
+                        writtenPrescriptionModel.addAttribute("toDate", toDate);
+                    }
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid date format: " + e.getMessage());
+                }
+                Pageable pageable = PageRequest.of((int)pageNumber, 10, Sort.by("prescriptionDate").descending());
+                Page<PrescriptionDto> prescriptionDto = dateFrom == null && dateTo == null? prescriptionService.getPrescriptionByCurrentMonthAndDoctor(currentUser.getId(), pageable): prescriptionService.getPrescriptionByDateRangeAndDoctor(dateFrom, dateTo, currentUser.getId(), pageable);
+                writtenPrescriptionModel.addAttribute("prescriptionDto", prescriptionDto);
+                writtenPrescriptionModel.addAttribute("username", username);
+                writtenPrescriptionModel.addAttribute("currentPage", pageNumber);
+                long numberOfElements = prescriptionDto.getTotalElements();
+                long numberOfButtons = numberOfElements%5;
+                writtenPrescriptionModel.addAttribute("numberOfButtons", numberOfButtons);
+                writtenPrescriptionModel.addAttribute("totalPages", prescriptionDto.getTotalPages());
+                return "PrescriptionsWrittenByDoctorPage";
+            } else {
+                throw new InvalidAuthorityException("You do not have the authority to this operation");
+            }
+        } else {
+            throw new InvalidJWTToken("JWT token is not valid");
+        }
     }
 
     @GetMapping("/auth/create-prescription-page")
-    public String createPrescriptionPage(@ModelAttribute("prescriptionDto") PrescriptionDto prescriptionDto, @RequestParam String jwtToken, @RequestParam String username, Model createPrescriptionPageModel){
+    public String createPrescriptionPage(@ModelAttribute("prescriptionDto") PrescriptionDto prescriptionDto, @CookieValue(value = "jwtToken", defaultValue = "") String jwtToken, @RequestParam String username, Model createPrescriptionPageModel){
         User currentUser = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username "+username));
         if (currentUser.getRole().equals(Role.DOCTOR)){
             if (jwtService.validateToken(jwtToken, currentUser)){

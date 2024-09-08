@@ -1,0 +1,38 @@
+.navbar-custom {
+    background-color: #d5edea;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border: 1px solid #e2e6ea;
+}
+
+.nav-item-profile .nav-link{
+    border-radius: 10px;
+}
+
+.nav-item-profile{
+    margin-right : 25px;
+}
+
+.nav-item-profile:hover .nav-link:hover{
+    background-color: black;
+    color: white;
+}
+.container{
+    width: 90%;
+}
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+.btn-edit{
+    margin-right: 15px;
+}
+.footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+}
+.footer a {
+    color: #343a40;
+}
+.footer a:hover {
+    color: #007bff;
+}

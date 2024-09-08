@@ -39,7 +39,7 @@
     </nav>
     <div class="container mt-4">
         <h2>Create Prescription</h2>
-        <form th:action="@{/api/v1/templates/auth/create-prescription(jwtToken=${jwtToken}, username=${username})}" th:object="${prescriptionDto}" method="post">
+        <form th:action="@{/api/v1/templates/auth/create-prescription(username=${username})}" th:object="${prescriptionDto}" method="post">
             <div class="mb-3">
                 <label for="patient" class="form-label">Patient</label>
                 <select id="patient" th:field="*{patientId}" class="form-select" required>
