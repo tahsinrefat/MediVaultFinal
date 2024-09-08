@@ -1,7 +1,6 @@
 package com.medi_vault_final.MediVaultFinal.controller;
 
 import com.medi_vault_final.MediVaultFinal.dto.AuthenticationRequestDto;
-import com.medi_vault_final.MediVaultFinal.dto.DateRangeDto;
 import com.medi_vault_final.MediVaultFinal.dto.PrescriptionDto;
 import com.medi_vault_final.MediVaultFinal.dto.UserDto;
 import com.medi_vault_final.MediVaultFinal.entity.User;
@@ -19,12 +18,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -103,6 +102,8 @@ public class TemplateController {
         LocalDate dateTo = null;
         try {
             if (fromDate != null && toDate != null){
+                model.addAttribute("fromDate", fromDate);
+                model.addAttribute("toDate", toDate);
                 dateFrom = LocalDate.parse(fromDate, formatter);
                 dateTo = LocalDate.parse(toDate, formatter);
             }
@@ -129,6 +130,19 @@ public class TemplateController {
         }
         return "ProfilePage";
     }
+
+    @PostMapping("/auth/logout")
+    public String logout(HttpServletResponse httpServletResponse, Model loginModel) throws IOException {
+        Cookie cookie = new Cookie("jwtToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        httpServletResponse.addCookie(cookie);
+        loginModel.addAttribute("authenticationRequestDto", new AuthenticationRequestDto(null, null));
+        return loginPage(loginModel);
+    }
+
 
 //    @GetMapping("/auth/profile-page")
 //    public String profilePage(@ModelAttribute("userDto") UserDto userDto){

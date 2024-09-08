@@ -26,7 +26,9 @@
                            aria-current="page">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <button type="submit" class="btn btn-danger rounded-3">Logout</button>
+                        <form action="#" th:action="@{/api/v1/templates/auth/logout}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger rounded-3">Logout</button>
+                        </form>
                     </li>
                 </ul>
             </div>
@@ -73,7 +75,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Iterate through the prescriptionDtoPage content to populate the table rows -->
                 <tr th:each="prescription : ${prescriptionDto}">
                     <td class="text-center" th:text="${prescription.prescriptionDate}"></td>
                     <td class="text-center" th:text="${prescription.patientId}"></td>
@@ -90,24 +91,20 @@
             </table>
         </div>
 
-        <!-- Pagination buttons -->
         <div class="d-flex justify-content-center">
             <ul class="pagination">
-                <!-- Previous button -->
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                     <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage - 1})}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
 
-                <!-- Dynamic pagination buttons -->
                 <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
                     th:classappend="${currentPage == pageNum} ? 'active'">
                     <a class="page-link" th:text="${pageNum + 1}"
                        th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${pageNum})}">1</a>
                 </li>
 
-                <!-- Next button -->
                 <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
                     <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage + 1})}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
