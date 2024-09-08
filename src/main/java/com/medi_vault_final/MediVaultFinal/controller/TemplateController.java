@@ -4,10 +4,14 @@ import com.medi_vault_final.MediVaultFinal.dto.AuthenticationRequestDto;
 import com.medi_vault_final.MediVaultFinal.dto.PrescriptionDto;
 import com.medi_vault_final.MediVaultFinal.dto.UserDto;
 import com.medi_vault_final.MediVaultFinal.entity.User;
+import com.medi_vault_final.MediVaultFinal.enums.Role;
+import com.medi_vault_final.MediVaultFinal.exception.InvalidAuthorityException;
+import com.medi_vault_final.MediVaultFinal.exception.InvalidJWTToken;
 import com.medi_vault_final.MediVaultFinal.exception.UserNotFoundException;
 import com.medi_vault_final.MediVaultFinal.mapper.UserMapper;
 import com.medi_vault_final.MediVaultFinal.repository.UserRepository;
 import com.medi_vault_final.MediVaultFinal.service.PrescriptionService;
+import com.medi_vault_final.MediVaultFinal.service.UserService;
 import com.medi_vault_final.MediVaultFinal.service.impl.AuthenticationService;
 import com.medi_vault_final.MediVaultFinal.service.impl.JWTService;
 import jakarta.servlet.http.Cookie;
@@ -41,6 +45,8 @@ public class TemplateController {
     private final UserRepository userRepository;
 
     private final JWTService jwtService;
+
+    private final UserService userService;
 
 
     @GetMapping("/auth/login-page")
@@ -127,6 +133,8 @@ public class TemplateController {
         if (jwtService.validateToken(jwtToken, user)){
             User user1 = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username: "+username));
             profileModel.addAttribute("userDto", UserMapper.mapToUserDto(user1));
+        }else {
+            throw new InvalidJWTToken("JWT token not valid");
         }
         return "ProfilePage";
     }
@@ -143,9 +151,27 @@ public class TemplateController {
         return loginPage(loginModel);
     }
 
+    @GetMapping("/auth/user-list/{page-number}")
+    public String showAllUserList(@RequestParam String jwtToken, @RequestParam String username, @PathVariable("page-number") long pageNumber, Model allUsersModel){
+        User currentUser = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username "+username));
+        if (jwtService.validateToken(jwtToken, currentUser)){
+            if (currentUser.getRole().equals(Role.ADMIN)){
+                Pageable pageable = PageRequest.of((int)pageNumber, 10, Sort.by("id").ascending());
+                Page<UserDto> allUsers = userService.getAllUsers(pageable);
+                allUsersModel.addAttribute("allUsers", allUsers);
+                allUsersModel.addAttribute("currentPage", pageNumber);
+                long numberOfElements = allUsers.getTotalElements();
+                long numberOfButtons = numberOfElements%5;
+                allUsersModel.addAttribute("numberOfButtons", numberOfButtons);
+                allUsersModel.addAttribute("totalPages", allUsers.getTotalPages());
+                allUsersModel.addAttribute("jwtToken", jwtToken);
+                allUsersModel.addAttribute("username", username);
+                return "ViewAllUsersPage";
+            } else {
+                throw new InvalidAuthorityException("You are not authorized to view this page.");
+            }
+        }
+        throw new InvalidJWTToken("Invalid JWT token");
+    }
 
-//    @GetMapping("/auth/profile-page")
-//    public String profilePage(@ModelAttribute("userDto") UserDto userDto){
-//        return "ProfilePage";
-//    }
 }
