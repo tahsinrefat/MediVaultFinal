@@ -20,16 +20,18 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item nav-item-profile">
-                        <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/prescription-report/0(username=${username})}">Prescription Report</a>
+                    <li class="nav-item nav-item-profile" th:if="${role} == 'ADMIN'">
+                        <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/prescription-report/0(username=${username})}">
+                            Prescription Report
+                        </a>
                     </li>
-                    <li class="nav-item nav-item-profile">
+                    <li class="nav-item nav-item-profile" th:if="${role} == 'ADMIN'">
                         <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/user-list/0(jwtToken=${jwtToken}, username=${username})}">User List</a>
                     </li>
-                    <li class="nav-item nav-item-profile">
+                    <li class="nav-item nav-item-profile" th:if="${role} == 'DOCTOR'">
                         <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/create-prescription-page(jwtToken=${jwtToken}, username=${username})}">Create Prescription</a>
                     </li>
-                    <li class="nav-item nav-item-profile">
+                    <li class="nav-item nav-item-profile" th:if="${role} == 'DOCTOR'">
                         <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/written-prescriptions/0(username=${username})}">Written Prescriptions</a>
                     </li>
                     <li class="nav-item nav-item-profile">
@@ -46,7 +48,7 @@
     </nav>
     <br><br>
     <div class="quotes">
-        <h1>Hello Mr. <span th:text="${name}">User</span>!</h1><br>
+        <h1>Hello <span th:if="${gender} == 'MALE'">Mr.</span> <span th:if="${gender} == 'FEMALE'">Ms.</span> <span th:text="${name}"></span>!</h1><br>
         <h2>Hope you feel better soon!</h2>
     </div>
 
@@ -76,7 +78,7 @@
                 <thead class="table-light">
                 <tr>
                     <th scope="col" class="text-center">Prescription Date</th>
-                    <th scope="col" class="text-center">Patient ID</th>
+<!--                    <th scope="col" class="text-center">Patient ID</th>-->
                     <th scope="col" class="text-center">Doctor ID</th>
                     <th scope="col" class="text-center">Diagnosis</th>
                     <th scope="col" class="text-center">Medicine</th>
@@ -87,7 +89,7 @@
                 <tbody>
                 <tr th:each="prescription : ${prescriptionDto}">
                     <td class="text-center" th:text="${prescription.prescriptionDate}"></td>
-                    <td class="text-center" th:text="${prescription.patientId}"></td>
+<!--                    <td class="text-center" th:text="${prescription.patientId}"></td>-->
                     <td class="text-center" th:text="${prescription.doctorId}"></td>
                     <td class="text-center" th:text="${prescription.diagnosis}"></td>
                     <td class="text-center" th:text="${prescription.medicine}"></td>

@@ -12,17 +12,30 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">MediVault</a>
+        <a class="navbar-brand" href="/api/v1/templates/auth/home-page/0">MediVault</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item nav-item-profile">
-                    <a class="nav-link active" aria-current="page" href="#">Profile</a>
+                <li class="nav-item nav-item-profile" th:if="${profileRole} == 'ADMIN'">
+                    <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/prescription-report/0(username=${username})}">
+                        Prescription Report
+                    </a>
+                </li>
+                <li class="nav-item nav-item-profile" th:if="${profileRole} == 'ADMIN'">
+                    <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/user-list/0(jwtToken=${jwtToken}, username=${username})}">User List</a>
+                </li>
+                <li class="nav-item nav-item-profile" th:if="${profileRole} == 'DOCTOR'">
+                    <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/create-prescription-page(jwtToken=${jwtToken}, username=${username})}">Create Prescription</a>
+                </li>
+                <li class="nav-item nav-item-profile" th:if="${profileRole} == 'DOCTOR'">
+                    <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/written-prescriptions/0(username=${username})}">Written Prescriptions</a>
                 </li>
                 <li class="nav-item">
-                    <button type="submit" class="btn btn-danger rounded-3">Logout</button>
+                    <form action="#" th:action="@{/api/v1/templates/auth/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger rounded-3">Logout</button>
+                    </form>
                 </li>
             </ul>
         </div>

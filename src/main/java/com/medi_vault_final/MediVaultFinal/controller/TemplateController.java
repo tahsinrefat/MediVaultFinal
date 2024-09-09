@@ -23,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -106,6 +105,8 @@ public class TemplateController {
         model.addAttribute("jwtToken", jwtToken);
         model.addAttribute("username", username);
         model.addAttribute("name", user.getName());
+        model.addAttribute("role", user.getRole().name());
+        model.addAttribute("gender", user.getGender().name());
         Pageable pageable = PageRequest.of((int)pageNumber, 10, Sort.by("prescriptionDate").descending());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateFrom = null;
@@ -137,6 +138,7 @@ public class TemplateController {
         if (jwtService.validateToken(jwtToken, user)){
             User user1 = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username: "+username));
             profileModel.addAttribute("userDto", UserMapper.mapToUserDto(user1));
+            profileModel.addAttribute("profileRole", user1.getRole().name());
         }else {
             throw new InvalidJWTToken("JWT token not valid");
         }
@@ -223,6 +225,7 @@ public class TemplateController {
                 }
                 Pageable pageable = PageRequest.of((int)pageNumber, 10, Sort.by("prescriptionDate").descending());
                 Page<PrescriptionDto> prescriptionDto = dateFrom == null && dateTo == null? prescriptionService.getPrescriptionByCurrentMonthAndDoctor(currentUser.getId(), pageable): prescriptionService.getPrescriptionByDateRangeAndDoctor(dateFrom, dateTo, currentUser.getId(), pageable);
+                writtenPrescriptionModel.addAttribute("name", currentUser.getName());
                 writtenPrescriptionModel.addAttribute("prescriptionDto", prescriptionDto);
                 writtenPrescriptionModel.addAttribute("username", username);
                 writtenPrescriptionModel.addAttribute("currentPage", pageNumber);

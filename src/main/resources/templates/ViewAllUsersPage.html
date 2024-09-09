@@ -14,17 +14,16 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">MediVault</a>
+            <a class="navbar-brand" href="/api/v1/templates/auth/home-page/0">MediVault</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item nav-item-profile">
-                        <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/user-list/0(jwtToken=${jwtToken}, username=${username})}">User List</a>
-                    </li>
-                    <li class="nav-item nav-item-profile">
-                        <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/another-link2}">Link 2</a>
+                        <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/prescription-report/0(username=${username})}">
+                            Prescription Report
+                        </a>
                     </li>
                     <li class="nav-item nav-item-profile">
                         <a class="nav-link btn btn-primary rounded-3" th:href="@{/api/v1/templates/auth/profile(jwtToken=${jwtToken}, username=${username})}" aria-current="page">Profile</a>
