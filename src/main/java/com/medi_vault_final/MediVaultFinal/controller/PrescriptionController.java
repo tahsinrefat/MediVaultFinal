@@ -70,29 +70,29 @@ public class PrescriptionController {
 
     //get all his/her prescriptions as any user by current month
     @GetMapping("/any/current-month-user-id/{id}")
-    public ResponseEntity<Page<PrescriptionDto>> getPrescriptionByCurrentMonthAndUserId(@PathVariable("id") Long userId, Pageable pageable){
-        Page<PrescriptionDto> allPrescriptionsByCurrentMonthAndUserId = prescriptionService.getPrescriptionByCurrentMonthAndUser(userId, pageable);
+    public ResponseEntity<Page<Object[]>> getPrescriptionByCurrentMonthAndUserId(@PathVariable("id") Long userId, Pageable pageable){
+        Page<Object[]> allPrescriptionsByCurrentMonthAndUserId = prescriptionService.getPrescriptionByCurrentMonthAndUser(userId, pageable);
         return ResponseEntity.ok(allPrescriptionsByCurrentMonthAndUserId);
     }
 
     //get all his/her prescriptions as any user by date range
     @GetMapping("/any/date-range-user-id/{id}")
-    public ResponseEntity<Page<PrescriptionDto>> getPrescriptionByDateRangeAndUserID(@PathVariable("id") Long userId, @RequestBody DateRangeDto dateRangeDto, Pageable pageable){
-        Page<PrescriptionDto> allPrescriptionsByDateRangeAndUserId = prescriptionService.getPrescriptionByDateRangeAndUserId(dateRangeDto.fromDate(), dateRangeDto.toDate(), userId, pageable);
+    public ResponseEntity<Page<Object[]>> getPrescriptionByDateRangeAndUserID(@PathVariable("id") Long userId, @RequestBody DateRangeDto dateRangeDto, Pageable pageable){
+        Page<Object[]> allPrescriptionsByDateRangeAndUserId = prescriptionService.getPrescriptionByDateRangeAndUserId(dateRangeDto.fromDate(), dateRangeDto.toDate(), userId, pageable);
         return ResponseEntity.ok(allPrescriptionsByDateRangeAndUserId);
     }
 
     //get all his/her written prescriptions as doctor by current month
     @GetMapping("/doctor/current-month-doctor-id/{id}")
-    public ResponseEntity<Page<PrescriptionDto>> getPrescriptionByCurrentMonthAndDoctorId(@PathVariable("id") Long doctorId, Pageable pageable){
-        Page<PrescriptionDto> allPrescriptionsByCurrentMonthAndDoctorId = prescriptionService.getPrescriptionByCurrentMonthAndDoctor(doctorId, pageable);
+    public ResponseEntity<Page<Object[]>> getPrescriptionByCurrentMonthAndDoctorId(@PathVariable("id") Long doctorId, Pageable pageable){
+        Page<Object[]> allPrescriptionsByCurrentMonthAndDoctorId = prescriptionService.getPrescriptionByCurrentMonthAndDoctor(doctorId, pageable);
         return ResponseEntity.ok(allPrescriptionsByCurrentMonthAndDoctorId);
     }
 
     //get all his/her written prescriptions as doctor by current month
     @GetMapping("/doctor/date-range-doctor-id/{id}")
-    public ResponseEntity<Page<PrescriptionDto>> getPrescriptionByDateRangeAndDoctorID(@PathVariable("id") Long doctorId, @RequestBody DateRangeDto dateRangeDto, Pageable pageable){
-        Page<PrescriptionDto> allPrescriptionsByDateRangeAndDoctorId = prescriptionService.getPrescriptionByDateRangeAndDoctor(dateRangeDto.fromDate(), dateRangeDto.toDate(), doctorId, pageable);
+    public ResponseEntity<Page<Object[]>> getPrescriptionByDateRangeAndDoctorID(@PathVariable("id") Long doctorId, @RequestBody DateRangeDto dateRangeDto, Pageable pageable){
+        Page<Object[]> allPrescriptionsByDateRangeAndDoctorId = prescriptionService.getPrescriptionByDateRangeAndDoctor(dateRangeDto.fromDate(), dateRangeDto.toDate(), doctorId, pageable);
         return ResponseEntity.ok(allPrescriptionsByDateRangeAndDoctorId);
     }
 }

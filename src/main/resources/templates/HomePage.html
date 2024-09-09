@@ -78,8 +78,7 @@
                 <thead class="table-light">
                 <tr>
                     <th scope="col" class="text-center">Prescription Date</th>
-<!--                    <th scope="col" class="text-center">Patient ID</th>-->
-                    <th scope="col" class="text-center">Doctor ID</th>
+                    <th scope="col" class="text-center">Doctor</th>
                     <th scope="col" class="text-center">Diagnosis</th>
                     <th scope="col" class="text-center">Medicine</th>
                     <th scope="col" class="text-center">Next Visit Date</th>
@@ -88,14 +87,13 @@
                 </thead>
                 <tbody>
                 <tr th:each="prescription : ${prescriptionDto}">
-                    <td class="text-center" th:text="${prescription.prescriptionDate}"></td>
-<!--                    <td class="text-center" th:text="${prescription.patientId}"></td>-->
-                    <td class="text-center" th:text="${prescription.doctorId}"></td>
-                    <td class="text-center" th:text="${prescription.diagnosis}"></td>
-                    <td class="text-center" th:text="${prescription.medicine}"></td>
-                    <td class="text-center" th:text="${prescription.nextVisitDate}"></td>
+                    <td class="text-center" th:text="${prescription[1]}"></td>
+                    <td class="text-center" th:text="${prescription[5]}+'. '+${prescription[6]}"></td>
+                    <td class="text-center" th:text="${prescription[2]}"></td>
+                    <td class="text-center" th:text="${prescription[3]}"></td>
+                    <td class="text-center" th:text="${prescription[4]}"></td>
                     <td class="text-center">
-                        <form th:action="@{'/api/v1/templates/auth/delete-prescription/' + ${prescription.id} + '?username=' + ${username}}" method="post" style="display:inline;">
+                        <form th:action="@{'/api/v1/templates/auth/delete-prescription/' + ${prescription[0]} + '?username=' + ${username}}" method="post" style="display:inline;">
                             <button type="submit" class="btn btn-danger rounded-3">Delete</button>
                         </form>
                     </td>

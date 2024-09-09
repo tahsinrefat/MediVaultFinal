@@ -86,26 +86,22 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     /* has some issue have to work on that later */
 
     @Override
-    public Page<PrescriptionDto> getPrescriptionByCurrentMonthAndUser(Long userId, Pageable pageable) {
-        Page<Prescription> allPrescriptionByCurrentMonthAndUserId = prescriptionRepository.findByCurrentMonthAndUserId(LocalDate.now(), userId, pageable);
-        return allPrescriptionByCurrentMonthAndUserId.map(PrescriptionMapper::mapToPrescriptionDto);
+    public Page<Object[]> getPrescriptionByCurrentMonthAndUser(Long userId, Pageable pageable) {
+        return prescriptionRepository.findByCurrentMonthAndUserId(LocalDate.now(), userId, pageable);
     }
 
     @Override
-    public Page<PrescriptionDto> getPrescriptionByDateRangeAndUserId(LocalDate fromDate, LocalDate toDate, Long userId, Pageable pageable) {
-        Page<Prescription> allPrescriptionByDateRangeAndId = prescriptionRepository.findByDateRangeAndUserId(fromDate, toDate, userId, pageable);
-        return allPrescriptionByDateRangeAndId.map(PrescriptionMapper::mapToPrescriptionDto);
+    public Page<Object[]> getPrescriptionByDateRangeAndUserId(LocalDate fromDate, LocalDate toDate, Long userId, Pageable pageable) {
+        return prescriptionRepository.findByDateRangeAndUserId(fromDate, toDate, userId, pageable);
     }
 
     @Override
-    public Page<PrescriptionDto> getPrescriptionByCurrentMonthAndDoctor(Long doctorId, Pageable pageable) {
-        Page<Prescription> allPrescriptionByCurrentMonthAndDoctorId = prescriptionRepository.findByCurrentMonthAndDoctorId(LocalDate.now(), doctorId, pageable);
-        return allPrescriptionByCurrentMonthAndDoctorId.map(PrescriptionMapper::mapToPrescriptionDto);
+    public Page<Object[]> getPrescriptionByCurrentMonthAndDoctor(Long doctorId, Pageable pageable) {
+        return prescriptionRepository.findByCurrentMonthAndDoctorId(LocalDate.now(), doctorId, pageable);
     }
 
     @Override
-    public Page<PrescriptionDto> getPrescriptionByDateRangeAndDoctor(LocalDate fromDate, LocalDate toDate, Long doctorId, Pageable pageable) {
-        Page<Prescription> allPrescriptionByDateRangeAndDoctorId = prescriptionRepository.findByDateRangeAndDoctorId(fromDate, toDate, doctorId, pageable);
-        return allPrescriptionByDateRangeAndDoctorId.map(PrescriptionMapper::mapToPrescriptionDto);
+    public Page<Object[]> getPrescriptionByDateRangeAndDoctor(LocalDate fromDate, LocalDate toDate, Long doctorId, Pageable pageable) {
+        return prescriptionRepository.findByDateRangeAndDoctorId(fromDate, toDate, doctorId, pageable);
     }
 }

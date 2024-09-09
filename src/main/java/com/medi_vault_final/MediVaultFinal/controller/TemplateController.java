@@ -121,7 +121,7 @@ public class TemplateController {
         } catch (DateTimeParseException e) {
             System.out.println("Invalid date format: " + e.getMessage());
         }
-        Page<PrescriptionDto> prescriptionDto = dateFrom == null && dateTo == null? prescriptionService.getPrescriptionByCurrentMonthAndUser(user.getId(), pageable): prescriptionService.getPrescriptionByDateRangeAndUserId(dateFrom, dateTo, user.getId(), pageable);
+        Page<Object[]> prescriptionDto = dateFrom == null && dateTo == null? prescriptionService.getPrescriptionByCurrentMonthAndUser(user.getId(), pageable): prescriptionService.getPrescriptionByDateRangeAndUserId(dateFrom, dateTo, user.getId(), pageable);
         model.addAttribute("prescriptionDto", prescriptionDto);
         model.addAttribute("currentPage", pageNumber);
         long numberOfElements = prescriptionDto.getTotalElements();
@@ -226,7 +226,7 @@ public class TemplateController {
                     System.out.println("Invalid date format: " + e.getMessage());
                 }
                 Pageable pageable = PageRequest.of((int)pageNumber, 10, Sort.by("prescriptionDate").descending());
-                Page<PrescriptionDto> prescriptionDto = dateFrom == null && dateTo == null? prescriptionService.getPrescriptionByCurrentMonthAndDoctor(currentUser.getId(), pageable): prescriptionService.getPrescriptionByDateRangeAndDoctor(dateFrom, dateTo, currentUser.getId(), pageable);
+                Page<Object[]> prescriptionDto = dateFrom == null && dateTo == null? prescriptionService.getPrescriptionByCurrentMonthAndDoctor(currentUser.getId(), pageable): prescriptionService.getPrescriptionByDateRangeAndDoctor(dateFrom, dateTo, currentUser.getId(), pageable);
                 writtenPrescriptionModel.addAttribute("name", currentUser.getName());
                 writtenPrescriptionModel.addAttribute("prescriptionDto", prescriptionDto);
                 writtenPrescriptionModel.addAttribute("username", username);

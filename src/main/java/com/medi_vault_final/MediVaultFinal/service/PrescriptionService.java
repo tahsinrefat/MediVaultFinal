@@ -25,11 +25,11 @@ public interface PrescriptionService {
     Page<Object[]> getPrescriptionCountByDate(LocalDate date, Pageable pageable);
     /* has some issue have to work on that later */
 
-    Page<PrescriptionDto> getPrescriptionByCurrentMonthAndUser(Long userId, Pageable pageable);
+    Page<Object[]> getPrescriptionByCurrentMonthAndUser(Long userId, Pageable pageable);
 
-    Page<PrescriptionDto> getPrescriptionByDateRangeAndUserId(LocalDate fromDate, LocalDate toDate, Long userId, Pageable pageable);
+    Page<Object[]> getPrescriptionByDateRangeAndUserId(LocalDate fromDate, LocalDate toDate, Long userId, Pageable pageable);
 
-    Page<PrescriptionDto> getPrescriptionByCurrentMonthAndDoctor(Long doctorId, Pageable pageable);
+    Page<Object[]> getPrescriptionByCurrentMonthAndDoctor(Long doctorId, Pageable pageable);
 
-    Page<PrescriptionDto> getPrescriptionByDateRangeAndDoctor(LocalDate fromDate, LocalDate toDate, Long doctorId, Pageable pageable);
+    Page<Object[]> getPrescriptionByDateRangeAndDoctor(LocalDate fromDate, LocalDate toDate, Long doctorId, Pageable pageable);
 }
