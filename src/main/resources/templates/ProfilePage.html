@@ -24,13 +24,13 @@
                     </a>
                 </li>
                 <li class="nav-item nav-item-profile" th:if="${profileRole} == 'ADMIN'">
-                    <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/user-list/0(jwtToken=${jwtToken}, username=${username})}">User List</a>
+                    <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/user-list/0(username=${userDto.username})}">User List</a>
                 </li>
                 <li class="nav-item nav-item-profile" th:if="${profileRole} == 'DOCTOR'">
-                    <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/create-prescription-page(jwtToken=${jwtToken}, username=${username})}">Create Prescription</a>
+                    <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/create-prescription-page(username=${userDto.username})}">Create Prescription</a>
                 </li>
                 <li class="nav-item nav-item-profile" th:if="${profileRole} == 'DOCTOR'">
-                    <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/written-prescriptions/0(username=${username})}">Written Prescriptions</a>
+                    <a class="nav-link btn btn-primary rounded-3 me-2" th:href="@{/api/v1/templates/auth/written-prescriptions/0(username=${userDto.username})}">Written Prescriptions</a>
                 </li>
                 <li class="nav-item">
                     <form action="#" th:action="@{/api/v1/templates/auth/logout}" method="post" class="d-inline">
