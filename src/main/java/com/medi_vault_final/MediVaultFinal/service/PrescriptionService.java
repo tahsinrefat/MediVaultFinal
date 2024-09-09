@@ -21,9 +21,7 @@ public interface PrescriptionService {
 
     Page<PrescriptionDto> getAllPrescriptionByDateRange(LocalDate fromDate, LocalDate toDate, Pageable pageable);
 
-    /* has some issue have to work on that later */
     Page<Object[]> getPrescriptionCountByDate(LocalDate date, Pageable pageable);
-    /* has some issue have to work on that later */
 
     Page<Object[]> getPrescriptionByCurrentMonthAndUser(Long userId, Pageable pageable);
 
