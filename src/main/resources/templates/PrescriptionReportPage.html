@@ -72,25 +72,29 @@
 
         <div class="d-flex justify-content-center">
             <ul class="pagination">
+                <!-- Previous Button -->
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage - 1})}" aria-label="Previous">
+                    <a class="page-link" th:href="@{/api/v1/templates/auth/prescription-report/{page-number}(page-number=${currentPage - 1}, dateLocal=${dateLocal}, username=${username})}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
 
+                <!-- Page Numbers -->
                 <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
                     th:classappend="${currentPage == pageNum} ? 'active'">
                     <a class="page-link" th:text="${pageNum + 1}"
-                       th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${pageNum})}">1</a>
+                       th:href="@{/api/v1/templates/auth/prescription-report/{page-number}(page-number=${pageNum}, dateLocal=${dateLocal}, username=${username})}"></a>
                 </li>
 
-                <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage + 1})}" aria-label="Next">
+                <!-- Next Button -->
+                <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/api/v1/templates/auth/prescription-report/{page-number}(page-number=${currentPage + 1}, dateLocal=${dateLocal}, username=${username})}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
             </ul>
         </div>
+
 
         <div class="footer">
             <footer class="footer mt-auto text-center shadow-lg">

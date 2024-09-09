@@ -14,7 +14,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">MediVault</a>
+            <a class="navbar-brand" href="/api/v1/templates/auth/home-page/0">MediVault</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -104,22 +104,46 @@
             </table>
         </div>
 
+<!--        <div class="d-flex justify-content-center">-->
+<!--            <ul class="pagination">-->
+<!--                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
+<!--                    <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage - 1})}" aria-label="Previous">-->
+<!--                        <span aria-hidden="true">&laquo;</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+
+<!--                <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"-->
+<!--                    th:classappend="${currentPage == pageNum} ? 'active'">-->
+<!--                    <a class="page-link" th:text="${pageNum + 1}"-->
+<!--                       th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${pageNum})}"></a>-->
+<!--                </li>-->
+
+<!--                <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">-->
+<!--                    <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage + 1})}" aria-label="Next">-->
+<!--                        <span aria-hidden="true">&raquo;</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
         <div class="d-flex justify-content-center">
             <ul class="pagination">
+                <!-- Previous Button -->
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage - 1})}" aria-label="Previous">
+                    <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage - 1}, fromDate=${fromDate}, toDate=${toDate})}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
 
+                <!-- Page Numbers -->
                 <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
                     th:classappend="${currentPage == pageNum} ? 'active'">
                     <a class="page-link" th:text="${pageNum + 1}"
-                       th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${pageNum})}">1</a>
+                       th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${pageNum}, fromDate=${fromDate}, toDate=${toDate})}"></a>
                 </li>
 
-                <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage + 1})}" aria-label="Next">
+                <!-- Next Button -->
+                <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/api/v1/templates/auth/home-page/{page-number}(page-number=${currentPage + 1}, fromDate=${fromDate}, toDate=${toDate})}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>

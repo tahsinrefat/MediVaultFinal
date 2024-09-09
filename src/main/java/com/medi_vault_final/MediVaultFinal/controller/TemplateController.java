@@ -164,6 +164,7 @@ public class TemplateController {
             if (currentUser.getRole().equals(Role.ADMIN)){
                 Pageable pageable = PageRequest.of((int)pageNumber, 10, Sort.by("id").ascending());
                 Page<UserDto> allUsers = userService.getAllUsers(pageable);
+                List<UserDto> allUsersList = userRepository.findAll().stream().map(UserMapper::mapToUserDto).toList();
                 allUsersModel.addAttribute("allUsers", allUsers);
                 allUsersModel.addAttribute("currentPage", pageNumber);
                 long numberOfElements = allUsers.getTotalElements();
@@ -172,6 +173,7 @@ public class TemplateController {
                 allUsersModel.addAttribute("totalPages", allUsers.getTotalPages());
                 allUsersModel.addAttribute("jwtToken", jwtToken);
                 allUsersModel.addAttribute("username", username);
+                allUsersModel.addAttribute("totalUsers", allUsersList.size());
                 return "ViewAllUsersPage";
             } else {
                 throw new InvalidAuthorityException("You are not authorized to view this page.");
@@ -229,6 +231,8 @@ public class TemplateController {
                 writtenPrescriptionModel.addAttribute("prescriptionDto", prescriptionDto);
                 writtenPrescriptionModel.addAttribute("username", username);
                 writtenPrescriptionModel.addAttribute("currentPage", pageNumber);
+                writtenPrescriptionModel.addAttribute("fromDate", fromDate);
+                writtenPrescriptionModel.addAttribute("toDate", toDate);
                 long numberOfElements = prescriptionDto.getTotalElements();
                 long numberOfButtons = numberOfElements%5;
                 writtenPrescriptionModel.addAttribute("numberOfButtons", numberOfButtons);
