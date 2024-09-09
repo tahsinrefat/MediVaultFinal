@@ -301,4 +301,40 @@ public class TemplateController {
         }
     }
 
+    @RequestMapping(value = "/auth/prescription-report/{page-number}", method = {RequestMethod.GET, RequestMethod.POST})
+    public String prescriptionReport(@PathVariable("page-number") long pageNumber, Model prescriptionReportModel, @RequestParam(required = false) String dateLocal, @CookieValue(value = "jwtToken", defaultValue = "") String jwtToken, @RequestParam String username){
+        User currentUser = userRepository.findByUsername(username).orElseThrow( () -> new UserNotFoundException("No user found with username "+ username));
+        if (jwtService.validateToken(jwtToken, currentUser)){
+            if (currentUser.getRole().equals(Role.ADMIN)){
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate localDate = null;
+                System.out.println(dateLocal);
+                try {
+                    if (dateLocal != null && !dateLocal.isEmpty()) {
+                        localDate = LocalDate.parse(dateLocal, formatter);
+
+                    }else {
+                        localDate = LocalDate.now();
+                    }
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid date format: " + e.getMessage());
+                }
+                Pageable pageable = PageRequest.of((int)pageNumber, 10, Sort.by("id").descending());
+
+                Page<Object[]> prescriptionCountByDate = prescriptionService.getPrescriptionCountByDate(localDate, pageable);
+                prescriptionReportModel.addAttribute("prescriptionCountByDate", prescriptionCountByDate);
+                prescriptionReportModel.addAttribute("username", username);
+                prescriptionReportModel.addAttribute("currentPage", pageNumber);
+                long numberOfElements = prescriptionCountByDate.getTotalElements();
+                long numberOfButtons = numberOfElements%5;
+                prescriptionReportModel.addAttribute("numberOfButtons", numberOfButtons);
+                prescriptionReportModel.addAttribute("totalPages", prescriptionCountByDate.getTotalPages());
+                return "PrescriptionReportPage";
+            } else {
+                throw new InvalidAuthorityException("You don't have the authority to this operation");
+            }
+        } else {
+            throw new InvalidJWTToken("JWT token is not valid");
+        }
+    }
 }
